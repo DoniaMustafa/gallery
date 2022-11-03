@@ -4,6 +4,7 @@ import 'package:gellary/config/color.dart';
 import 'package:gellary/config/text_them.dart';
 import 'package:gellary/core/dependency_injection/di.dart';
 import 'package:gellary/core/utils/constant.dart';
+import 'package:gellary/data/datasourse/local/cache_helper.dart';
 import 'package:gellary/presentation/screens/home/home_screen.dart';
 import 'package:gellary/presentation/screens/login/blocs/login_cubit.dart';
 import 'package:gellary/presentation/widgets/custom_button_widget.dart';
@@ -67,6 +68,8 @@ class InFrontOfLoginWidget extends StatelessWidget {
   Widget buildSubmitButton() => BlocConsumer<LoginCubit, LoginState>(
         listener: (context, state) {
           if (state is SuccessState && state.user != null) {
+            di<CacheHelper>().get('name');
+            di<CacheHelper>().get('token');
             Navigator.push(
                 context, MaterialPageRoute(builder: (context) => HomeScreen()));
           }
