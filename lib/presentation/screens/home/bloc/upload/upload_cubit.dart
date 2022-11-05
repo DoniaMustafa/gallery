@@ -1,13 +1,10 @@
-import 'dart:io';
 import 'package:gellary/core/utils/constant.dart';
 import 'package:bloc/bloc.dart';
 import 'package:dio/dio.dart';
 import 'package:gellary/data/repositories/upload_to_gallery_reop.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:meta/meta.dart';
-
-
 part 'upload_state.dart';
+
 
 class UploadCubit extends Cubit<UploadState> {
   UploadCubit(this.repository) : super(UploadInitial());
@@ -15,11 +12,7 @@ class UploadCubit extends Cubit<UploadState> {
   final UploadToGalleryRepository repository;
   bool isSelect = false;
 
-  MultipartFile? multipartFile;
-  XFile? image;
-  List multipartImageList = [];
-  List<File>? imgeFile = [];
-  ImagePicker? imagePicker = ImagePicker();
+
 
   selectGallery() {
     isSelect = !isSelect;
