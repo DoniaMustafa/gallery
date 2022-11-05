@@ -43,7 +43,7 @@ class MyApp extends StatelessWidget {
       child: const MaterialApp(
         useInheritedMediaQuery: true,
         debugShowCheckedModeBanner: false,
-        home: LoginScreen(),
+        home: HomeScreen(),
       ),
     );
   }

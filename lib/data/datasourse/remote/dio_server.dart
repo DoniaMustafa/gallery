@@ -26,6 +26,7 @@ class DioImplement implements DioHelper {
       'Accept': 'application/json',
       'Content-Type': 'application/json',
       'Authorization': 'Bearer $token',
+
     };
 
     return await dio.post(url, data: data);

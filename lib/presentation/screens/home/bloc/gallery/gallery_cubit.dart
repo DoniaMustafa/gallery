@@ -1,6 +1,5 @@
 import 'package:bloc/bloc.dart';
 import 'package:dio/dio.dart';
-import 'dart:io';
 import 'package:gellary/data/models/gallery_model.dart';
 import 'package:gellary/data/repositories/get_gallery_repository.dart';
 import 'package:meta/meta.dart';
