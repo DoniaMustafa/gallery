@@ -17,7 +17,6 @@ class InFrontOfWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     return ClipPath(
       clipper: CurveClip(),
       child: Stack(
@@ -25,16 +24,19 @@ class InFrontOfWidget extends StatelessWidget {
         children: [
           Container(
             color: white.withOpacity(0.5),
-            padding:
-                 EdgeInsets.symmetric(horizontal: width! >= 600?40:20.0, vertical:width! >= 600?40: 20.0),
+            padding: EdgeInsets.symmetric(
+                horizontal: width! >= 600 ? 40 : 20.0,
+                vertical: width! >= 600 ? 40 : 20.0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 CustomTextWidget(
                   txt: ' Welcome\n ${name} ',
-                  style:width! >= 600?textThemeData.headlineMedium: textThemeData.headlineSmall,
+                  style: width! >= 600
+                      ? textThemeData.headlineMedium
+                      : textThemeData.headlineSmall,
                 ),
-                 SizedBox(height:width! >= 600?100: 50),
+                SizedBox(height: width! >= 600 ? 100 : 50),
                 buildActionButtons(context),
                 const SizedBox(height: 40),
                 Expanded(
@@ -95,17 +97,25 @@ class InFrontOfWidget extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            CustomButtonWithImgWidget(
-                txt: 'Gallery',
-                img: 'assets/gallery.png',
-                tap: () => di<UploadCubit>().uploadImageCamera('Gallery')),
+            BlocBuilder<UploadCubit, UploadState>(
+              builder: (context, state) {
+                return CustomButtonWithImgWidget(
+                    txt: 'Gallery',
+                    img: 'assets/gallery.png',
+                    tap: () => di<UploadCubit>().uploadImageCamera('Gallery'));
+              },
+            ),
             const SizedBox(
               height: 20,
             ),
-            CustomButtonWithImgWidget(
-                txt: 'Camera',
-                img: 'assets/camera.png',
-                tap: () => di<UploadCubit>().uploadImageCamera('Camera')),
+            BlocBuilder<UploadCubit, UploadState>(
+              builder: (context, state) {
+                return CustomButtonWithImgWidget(
+                    txt: 'Camera',
+                    img: 'assets/camera.png',
+                    tap: () => di<UploadCubit>().uploadImageCamera('Camera'));
+              },
+            ),
           ],
         ),
       );

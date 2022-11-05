@@ -1,14 +1,11 @@
 import 'dart:io';
 import 'package:gellary/core/utils/constant.dart';
-import 'package:gellary/core/utils/end_pints.dart';
-import 'package:http_parser/http_parser.dart';
-
 import 'package:bloc/bloc.dart';
 import 'package:dio/dio.dart';
 import 'package:gellary/data/repositories/upload_to_gallery_reop.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:meta/meta.dart';
-import 'package:http/http.dart' as http;
+
 
 part 'upload_state.dart';
 
@@ -16,7 +13,7 @@ class UploadCubit extends Cubit<UploadState> {
   UploadCubit(this.repository) : super(UploadInitial());
 
   final UploadToGalleryRepository repository;
-  bool isSelect=false;
+  bool isSelect = false;
 
   MultipartFile? multipartFile;
   XFile? image;
@@ -24,30 +21,38 @@ class UploadCubit extends Cubit<UploadState> {
   List<File>? imgeFile = [];
   ImagePicker? imagePicker = ImagePicker();
 
-
- selectGallery(){
-  isSelect = !isSelect;
-  print(isSelect);
-  emit(SelectImageState());
-}
-
-
-  Future uploadImageCamera(String pick) async {
-    isSelect=false;
-    if(pick =='Camera'){ image = await imagePicker!.pickImage(source: ImageSource.camera);}
-    else{image = await imagePicker!.pickImage(source: ImageSource.gallery);}
-
-    multipartFile = await   MultipartFile.fromFile(image!.path,
-      filename: image!.name,contentType: MediaType("image", image!.path.split(".").last));
-    multipartImageList.add(multipartFile!);
-    uploadFile( multipartImageList);
-    // upload(image!.name,image!.path);
-    emit(UploadImageState());
+  selectGallery() {
+    isSelect = !isSelect;
+    print(isSelect);
+    emit(SelectImageState());
   }
 
-  Future<Response?> uploadFile(List img) async {
+  Future uploadImageCamera(String pick) async {
+    emit(UploadLoadingState());
+    isSelect = false;
+
+  await  repository.uploadImageCamera(pick: pick).then((value) {
+      print(value);
+      uploadFile();
+      emit(UploadSuccessState());
+    }).catchError((onError) {
+      emit(UploadErrorState());
+    });
+    // isSelect=false;
+    // if(pick =='Camera'){ image = await imagePicker!.pickImage(source: ImageSource.camera);}
+    // else{image = await imagePicker!.pickImage(source: ImageSource.gallery);}
+    //
+    // multipartFile = await   MultipartFile.fromFile(image!.path,
+    //   filename: image!.name,contentType: MediaType("image", image!.path.split(".").last));
+    // multipartImageList.add(multipartFile!);
+    // uploadFile( );
+    // upload(image!.name,image!.path);
+
+  }
+
+  Future<Response?> uploadFile() async {
     emit(LoadingImageState());
-    return await repository.uploadImages(img:img,toke: token!).then((value) {
+    return await repository.uploadImages(toke: token!).then((value) {
       print('success');
       emit(SuccessImageState());
     }).catchError((error) {
@@ -57,31 +62,4 @@ class UploadCubit extends Cubit<UploadState> {
   }
 
 
-  Future upload(String imageName,String imagePath)async{
-    emit(LoadingImageState());
-
-    var headers = {
-      'Content-Type': 'application/json',
-      'Accept': 'application/json',
-      'Authorization': 'Bearer $token'
-    };
-    var request = http.MultipartRequest('POST', Uri.parse('$lBaseUrl$uploadImageEndPoint'));
-    request.files.add(await http.MultipartFile.fromPath(imageName, imagePath));
-    request.headers.addAll(headers);
-
-    http.StreamedResponse response = await request.send();
-
-    if (response.statusCode == 200) {
-    print(await response.stream.bytesToString());
-    print('dv');
-    emit(SuccessImageState());
-
-    }
-    else {
-    print(response.reasonPhrase);
-    emit(ErrorImageState());
-
-    }
-
-  }
 }
